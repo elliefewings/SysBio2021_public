@@ -140,7 +140,7 @@ lapatinib <- getGEO("GSE116445", destdir=outdir, AnnotGPL=TRUE)[[1]]
 ########
 
 ### Download cisplatin dataset
-
+cisplatin <- getGEO("GSE116439", destdir=outdir, AnnotGPL=TRUE)[[1]]
 
 ```
 
@@ -167,6 +167,7 @@ attributes(lapatinib)
 ########
 
 ### How many Features and Samples in the cisplatin set?
+dim(cisplatin)
 
 ```
 
@@ -176,14 +177,20 @@ attributes(lapatinib)
 # Features = probes
 head(featureNames(lapatinib), 5)
 
+
 # Samples = transcriptome profiles (under certain experimental conditions)
 head(sampleNames(lapatinib), 5)
+
 
 ########
 # TASK #
 ########
 
 ### Are the features of the lapatinib set the same as the cisplatin set?
+head(featureNames(cisplatin), 5)
+
+sum(featureNames(cisplatin) != featureNames(lapatinib))
+
 
 ```
 
@@ -237,10 +244,16 @@ drug_conc.min = min(drug_conc)
 ### Extract information about the lapatinib time points (element 4). What are the minimum and maximum time points?
 
 ## Time point: basically the same as above
-#drug_tpoint = 
+drug_tpoint = sapply(sample_tags, function(tag){
+  strsplit(tag, split="_")[[1]][4]
+  })
+
+drug_tpoint = gsub("h", "", drug_tpoint)
+
+drug_tpoint = as.numeric(drug_tpoint)
 
 ## Add back to lapatinib set
-#lapatinib$drug_tpoint = 
+lapatinib$drug_tpoint = drug_tpoint
 
 # Find min and max
 #drug_tpoint.max = 
@@ -254,6 +267,7 @@ Finally we subset the data
 
 # Select samples that have been given the maximum or minimum drug concentration
 selected_samples = (drug_conc == drug_conc.max | drug_conc == drug_conc.min)
+
 lapatinib = lapatinib[, selected_samples]
 
 ########
@@ -261,6 +275,10 @@ lapatinib = lapatinib[, selected_samples]
 ########
 
 ### How many samples do we now have in the lapatinib set?
+
+dim(lapatinib)
+
+sampleNames(lapatinib) %>% length()
 
 ```
 
@@ -443,6 +461,7 @@ gset = gsets[['BIOCARTA_MAPK_PATHWAY']]
 Now we will download the protein-protein interaction network from [OmniPath](http://omnipathdb.org/interactions?genesymbols=1).
 
 ```{r opath, eval=F, results=F, message=F}
+
 url = 'http://omnipathdb.org/interactions?genesymbols=1'
 opath = unique(read.table(url, sep='\t', header=T)[, c(3, 4)])
 
