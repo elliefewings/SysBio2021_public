@@ -62,8 +62,8 @@ Load the expression and annotation data we saved yesterday:
 
 ```{r load, results=F, message=F}
 
-data = readRDS('~/SysBio_day1_2/lapatinib_expression.rds')
-meta = readRDS('~/SysBio_day1_2/lapatinib_phenotype.rds')
+data <- readRDS('~/SysBio_day1_2/lapatinib_expression.rds')
+meta <- readRDS('~/SysBio_day1_2/lapatinib_phenotype.rds')
 ```
 
 ## 4) Generating barplot
@@ -196,7 +196,7 @@ statplot +
 
 ## 6) Boxplots
 
-Let's see now how this data looks using a box plot, coloring by tissue:
+Let's see now how this data looks using a box plot:
 
 ```{r distribution2, results=F, message=F}
 
